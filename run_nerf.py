@@ -459,8 +459,11 @@ def create_nerf(args):
 
 
 def config_parser():
+    # to read training parameters
+    # this function is similar to argument parser
+    # import argparse
 
-    import configargparse
+    import configargparse # better put to the front
     parser = configargparse.ArgumentParser()
     parser.add_argument('--config', is_config_file=True,
                         help='config file path')
@@ -575,7 +578,7 @@ def config_parser():
 def train():
 
     parser = config_parser()
-    args = parser.parse_args()
+    args = parser.parse_args() # Namespace()
     
     if args.random_seed is not None:
         print('Fixing random seed', args.random_seed)
@@ -583,7 +586,8 @@ def train():
         tf.compat.v1.set_random_seed(args.random_seed)
 
     # Load data
-
+    # three kinds of dataset_type
+    # only the first phase of data loading
     if args.dataset_type == 'llff':
         images, poses, bds, render_poses, i_test = load_llff_data(args.datadir, args.factor,
                                                                   recenter=True, bd_factor=.75,
@@ -615,6 +619,7 @@ def train():
     elif args.dataset_type == 'blender':
         images, poses, render_poses, hwf, i_split = load_blender_data(
             args.datadir, args.half_res, args.testskip)
+        # hwf is the height, width and focal length of the image
         print('Loaded blender', images.shape,
               render_poses.shape, hwf, args.datadir)
         i_train, i_val, i_test = i_split
